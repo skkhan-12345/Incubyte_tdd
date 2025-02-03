@@ -4,12 +4,15 @@ function add(numbers: string): number {
       return 0; 
     }
     
-    if (numbers.includes("\n") || numbers.includes(",")) {
-      const splitNumbers = numbers.split(/[\n,]/);
-      return splitNumbers.map(Number).reduce((sum, num) => sum + num, 0);
+    let delimiters = [",", "\n"];
+    if (numbers.startsWith("//")) {
+      const delimiterLineEnd = numbers.indexOf("\n");
+      delimiters = [numbers.slice(2, delimiterLineEnd)];
+      numbers = numbers.slice(delimiterLineEnd + 1);
     }
-    
-    return parseInt(numbers, 10);; 
+  
+    const splitNumbers = numbers.split(new RegExp(`[${delimiters.join('')}]`)).map(Number);
+    return splitNumbers.reduce((sum, num) => sum + num, 0);
   }
 
   test('Empty string returns 0', () => {
@@ -27,6 +30,11 @@ function add(numbers: string): number {
   test('Handles new line as delimiter', () => {
     expect(add("1\n2,3")).toBe(6);
   });
+
+  test('Supports custom delimiters', () => {
+    expect(add("//;\n1;2")).toBe(3);
+  });
+  
   
   
   
