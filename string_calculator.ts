@@ -3,10 +3,11 @@ function add(numbers: string): number {
     if (numbers === "") {
       return 0; 
     }
-    if (numbers.includes(",")) {
-        const numArray = numbers.split(",").map(Number);
-        return numArray.reduce((sum, num) => sum + num, 0);
-      }
+    
+    if (numbers.includes("\n") || numbers.includes(",")) {
+      const splitNumbers = numbers.split(/[\n,]/);
+      return splitNumbers.map(Number).reduce((sum, num) => sum + num, 0);
+    }
     
     return parseInt(numbers, 10);; 
   }
@@ -21,6 +22,10 @@ function add(numbers: string): number {
 
   test('Two numbers returns the sum of the numbers', () => {
     expect(add("1,5")).toBe(6);
+  });
+
+  test('Handles new line as delimiter', () => {
+    expect(add("1\n2,3")).toBe(6);
   });
   
   
